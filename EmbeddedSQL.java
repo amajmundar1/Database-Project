@@ -249,39 +249,67 @@ public class EmbeddedSQL {
    }//end QueryExample
    
    public static void Query1(EmbeddedSQL esql){
-      // Your code goes here.
-      // ...
-      // ...
+      try {
+	String.query = "SELECT sid, COUNT(pid) FROM catalog GROUP BY sid;";
+	System.out.println (esql.executeQuery(query));
+	} catch (Exception e) {
+	     System.err.println (e.getMessage());
+	}
    }//end Query1
 
    public static void Query2(EmbeddedSQL esql){
-      // Your code goes here.
-      // ...
-      // ...
+	try {
+        	String.query = "SELECT sid, COUNT(pid) FROM catalog GROUP BY sid HAVING COUNT(pid) > 2;";
+        	System.out.println (esql.executeQuery(query));
+        } catch (Exception e) {
+		System.err.println (e.getMessage());
+        }
+
    }//end Query2
 
    public static void Query3(EmbeddedSQL esql){
-      // Your code goes here.
-      // ...
-      // ...
+	try {
+		String.query = "SELECT s.sname, COUNT(*) FROM suppliers s, catalog c, parts p WHERE s.sid = c.sid AND p.pid = c.pid GROUP BY s.sname, s.sid HAVING EVERY(p.color = 'GREEN');";
+        	System.out.println (esql.executeQuery(query));
+        } catch (Exception e) {
+        	System.err.println (e.getMessage());
+        }
+
    }//end Query3
 
    public static void Query4(EmbeddedSQL esql){
-      // Your code goes here.
-      // ...
-      // ...
+	try {
+		String.query = "SELECT s.sname, MAX(c.cost) FROM suppliers s, catalog c, parts p WHERE s.sid = c.sid AND p.pid = c.pid GROUP BY s.sname, s.sid HAVING EVERY(p.color = 'Green' OR p.color = 'Red');";
+        	System.out.println (esql.executeQuery(query));
+        } catch (Exception e) {
+        	System.err.println (e.getMessage());
+        }
+
    }//end Query4
 
    public static void Query5(EmbeddedSQL esql){
-      // Your code goes here.
-      // ...
-      // ...
+      try{
+         String query = "SELECT p.pname FROM parts p, catalog c WHERE c.pid = p.pid AND c.cost < ";
+         System.out.print("\tEnter Max cost: $");
+         String input = in.readLine();
+         query += input;
+         System.out.println (esql.executeQuery(query));
+      }catch(Exception e){
+         System.err.println (e.getMessage());
+      }
    }//end Query5
 
    public static void Query6(EmbeddedSQL esql){
-      // Your code goes here.
-      // ...
-      // ...
+      try{
+         String query = "SELECT s.address FROM suppliers s, parts p, catalog c WHERE s.sid = c.sid AND c.pid = p.pid AND p.pname = ";
+         System.out.print("\tEnter the name of the part: $");
+         String input = in.readLine();
+         query += input;
+         System.out.println (esql.executeQuery(query));
+      }catch(Exception e){
+         System.err.println (e.getMessage());
+      }
+
    }//end Query6
 
 }//end EmbeddedSQL
