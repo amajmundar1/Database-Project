@@ -250,8 +250,8 @@ public class EmbeddedSQL {
    
    public static void Query1(EmbeddedSQL esql){
       try {
-	String.query = "SELECT sid, COUNT(pid) FROM catalog GROUP BY sid;";
-	System.out.println (esql.executeQuery(query));
+	String query = "SELECT sid, COUNT(pid) FROM catalog GROUP BY sid";
+	esql.executeQuery(query);
 	} catch (Exception e) {
 	     System.err.println (e.getMessage());
 	}
@@ -259,8 +259,8 @@ public class EmbeddedSQL {
 
    public static void Query2(EmbeddedSQL esql){
 	try {
-        	String.query = "SELECT sid, COUNT(pid) FROM catalog GROUP BY sid HAVING COUNT(pid) > 2;";
-        	System.out.println (esql.executeQuery(query));
+        	String query = "SELECT sid, COUNT(pid) FROM catalog GROUP BY sid HAVING COUNT(pid) > 2";
+        	esql.executeQuery(query);
         } catch (Exception e) {
 		System.err.println (e.getMessage());
         }
@@ -269,8 +269,8 @@ public class EmbeddedSQL {
 
    public static void Query3(EmbeddedSQL esql){
 	try {
-		String.query = "SELECT s.sname, COUNT(*) FROM suppliers s, catalog c, parts p WHERE s.sid = c.sid AND p.pid = c.pid GROUP BY s.sname, s.sid HAVING EVERY(p.color = 'GREEN');";
-        	System.out.println (esql.executeQuery(query));
+		String query = "SELECT s.sname, COUNT(*) FROM suppliers s, catalog c, parts p WHERE s.sid = c.sid AND p.pid = c.pid GROUP BY s.sname, s.sid HAVING EVERY(p.color = 'GREEN')";
+        	esql.executeQuery(query);
         } catch (Exception e) {
         	System.err.println (e.getMessage());
         }
@@ -279,8 +279,8 @@ public class EmbeddedSQL {
 
    public static void Query4(EmbeddedSQL esql){
 	try {
-		String.query = "SELECT s.sname, MAX(c.cost) FROM suppliers s, catalog c, parts p WHERE s.sid = c.sid AND p.pid = c.pid GROUP BY s.sname, s.sid HAVING EVERY(p.color = 'Green' OR p.color = 'Red');";
-        	System.out.println (esql.executeQuery(query));
+		String query = "SELECT s.sname, MAX(c.cost) FROM suppliers s, catalog c, parts p WHERE s.sid = c.sid AND p.pid = c.pid GROUP BY s.sname, s.sid HAVING EVERY(p.color = 'Green' OR p.color = 'Red')";
+        	esql.executeQuery(query);
         } catch (Exception e) {
         	System.err.println (e.getMessage());
         }
@@ -293,7 +293,7 @@ public class EmbeddedSQL {
          System.out.print("\tEnter Max cost: $");
          String input = in.readLine();
          query += input;
-         System.out.println (esql.executeQuery(query));
+         esql.executeQuery(query);
       }catch(Exception e){
          System.err.println (e.getMessage());
       }
@@ -302,10 +302,11 @@ public class EmbeddedSQL {
    public static void Query6(EmbeddedSQL esql){
       try{
          String query = "SELECT s.address FROM suppliers s, parts p, catalog c WHERE s.sid = c.sid AND c.pid = p.pid AND p.pname = ";
-         System.out.print("\tEnter the name of the part: $");
+         System.out.print("\tEnter the name of the part: ");
          String input = in.readLine();
+	 input = "\'" + input + "\'";
          query += input;
-         System.out.println (esql.executeQuery(query));
+         esql.executeQuery(query);
       }catch(Exception e){
          System.err.println (e.getMessage());
       }
