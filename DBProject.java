@@ -519,65 +519,185 @@ public class DBProject {
    
    public static void numberOfAvailableRooms(DBProject esql){
 	  // Given a hotelID, get the count of rooms available 
-      // Your code goes here.
-      // ...
-      // ...
+	int hotelID;
+	try {
+	System.out.print("Enter hotelID: ");
+	hotelID = Integer.parseInt(in.readLine());
+ 	System.out.println("Checking today's available rooms.");
+	esql.executeQuery("SELECT COUNT(*) FROM room WHERE hotelid = " + hotelID 
+                           + " AND (hotelid, roomno) NOT IN "
+                           + "(SELECT hotelid, roomno FROM booking " 
+                           + "WHERE bookingdate = '" + LocalDate.now().toString() + "');");  
+	}catch (Exception e) {
+		System.err.println (e.getMessage());
+    }//end try
    }//end numberOfAvailableRooms
    
    public static void numberOfBookedRooms(DBProject esql){
 	  // Given a hotelID, get the count of rooms booked
-      // Your code goes here.
-      // ...
-      // ...
+int hotelID;
+	try {
+		System.out.print("Enter hotelID: ");
+		hotelID = Integer.parseInt(in.readLine());
+		System.out.println("Checking today's booked rooms.");
+		esql.executeQuery("SELECT COUNT(*) FROM booking " 
+				+ "WHERE hotelid = " + hotelID 
+				+ " AND bookingdate = '" + LocalDate.now().toString() + "';");  
+	}catch (Exception e) {
+		System.err.println (e.getMessage());
+	}//end try
    }//end numberOfBookedRooms
    
    public static void listHotelRoomBookingsForAWeek(DBProject esql){
 	  // Given a hotelID, date - list all the rooms available for a week(including the input date) 
-      // Your code goes here.
-      // ...
-      // ...
+	int hotelID;
+	String date;
+	int day, month, year;
+	LocalDate startDate, endDate; 
+	try {
+		System.out.print("Enter hotelID: ");
+		hotelID = Integer.parseInt(in.readLine());
+		System.out.print("Enter intial date (mm-dd-yyyy): ");
+		date = in.readLine();
+      
+		String[] tokens = date.split("-");
+		month = Integer.parseInt(tokens[0]);
+		day = Integer.parseInt(tokens[1]);
+		year = Integer.parseInt(tokens[2]);
+		startDate = LocalDate.of(year,month,day);
+		endDate = startDate.plusDays(7);
+
+		esql.executeQuery("SELECT r.* FROM room r WHERE r.hotelid = " + hotelID 
+                        	+ " AND (r.hotelid, r.roomno) NOT IN "
+                        	+ "(SELECT b.hotelid, b.roomno FROM booking b " 
+                        	+ "WHERE b.bookingdate BETWEEN '" + startDate.toString() 
+                        	+ "' AND '" + endDate.toString() + "');");  
+
+	}catch (Exception e) {
+		System.err.println (e.getMessage());
+	}//end try
    }//end listHotelRoomBookingsForAWeek
    
    public static void topKHighestRoomPriceForADateRange(DBProject esql){
 	  // List Top K Rooms with the highest price for a given date range
-      // Your code goes here.
-      // ...
-      // ...
+	int k;
+    String date1, date2;
+    LocalDate startDate, endDate; 
+
+    try {
+      System.out.print("Enter k: ");
+      k = Integer.parseInt(in.readLine());
+      System.out.print("Enter start date (mm-dd-yyyy): ");
+      date1 = in.readLine();
+      System.out.print("Enter end date (mm-dd-yyyy): ");
+      date2 = in.readLine();
+
+      String[] tokens1 = date1.split("-");
+      String[] tokens2 = date2.split("-");
+      
+      startDate = LocalDate.of(Integer.parseInt(tokens1[2]), Integer.parseInt(tokens1[0]) , Integer.parseInt(tokens1[1]));
+      endDate = LocalDate.of(Integer.parseInt(tokens2[2]), Integer.parseInt(tokens2[0]) , Integer.parseInt(tokens2[1]));
+
+		esql.executeQuery("SELECT * FROM booking WHERE bookingdate BETWEEN '" + startDate.toString() 
+                        	  + "' AND '" + endDate.toString() + "' ORDER BY price DESC LIMIT " + k + ";");  
+
+ 	} catch (Exception e) {
+		System.err.println (e.getMessage());
+	}//end try
    }//end topKHighestRoomPriceForADateRange
    
    public static void topKHighestPriceBookingsForACustomer(DBProject esql){
 	  // Given a customer Name, List Top K highest booking price for a customer 
-      // Your code goes here.
-      // ...
-      // ...
+	int k;
+	String customerName;
+
+	try {
+		System.out.print("Enter k: ");
+		k = Integer.parseInt(in.readLine());
+		System.out.print("Enter customer's full name: ");
+		String fullName = in.readLine();
+		String[] names = fullName.split(" ");
+
+		esql.executeQuery("SELECT b.price FROM booking b, customer c WHERE c.fName = '" + names[0] 
+                        	+ "' AND c.lName = '" + names[1] 
+                        	+ "' AND b.customer = c.customerID ORDER BY b.price DESC LIMIT " + k + ";");  
+
+	} catch (Exception e) {
+		System.err.println (e.getMessage());
+	}//end try
    }//end topKHighestPriceBookingsForACustomer
    
    public static void totalCostForCustomer(DBProject esql){
 	  // Given a hotelID, customer Name and date range get the total cost incurred by the customer
-      // Your code goes here.
-      // ...
-      // ...
+	try {
+ 		System.out.print("Enter hotelID: ");
+ 		int hotelID = Integer.parseInt(in.readLine());
+ 		System.out.print("Enter customer's full name: ");
+ 		String fullName = in.readLine();
+ 		String[] names = fullName.split(" ");
+		System.out.print("Enter start date (mm-dd-yyyy): ");
+		String date1 = in.readLine();
+		System.out.print("Enter end date (mm-dd-yyyy): ");
+		String date2 = in.readLine();
+		String[] tokens1 = date1.split("-");
+		String[] tokens2 = date2.split("-");
+		LocalDate startDate = LocalDate.of(Integer.parseInt(tokens1[2]), Integer.parseInt(tokens1[0]) , Integer.parseInt(tokens1[1]));
+		LocalDate endDate = LocalDate.of(Integer.parseInt(tokens2[2]), Integer.parseInt(tokens2[0]) , Integer.parseInt(tokens2[1]));
+
+		esql.executeQuery("SELECT b.price FROM booking b, customer c WHERE b.hotelid = " + hotelID 
+                        	+ " AND c.fName = '" + names[0] + "' AND c.lName = '" + names[1] 
+                        	+ "' AND b.customer = c.customerID "
+                        	+ "AND b.bookingdate BETWEEN DATE '" + startDate.toString() 
+                        	+ "' AND DATE '" + endDate.toString() + "';");  
+
+	}catch (Exception e) {
+		System.err.println (e.getMessage());
+	}//end try
    }//end totalCostForCustomer
    
    public static void listRepairsMade(DBProject esql){
 	  // Given a Maintenance company name list all the repairs along with repairType, hotelID and roomNo
-      // Your code goes here.
-      // ...
-      // ...
+	try {
+	System.out.print("Enter maintenance company name: ");
+	String companyName = in.readLine();
+	esql.executeQuery("SELECT rep.repairType, rep.hotelID, rep.roomNo FROM repair rep, MaintenanceCompany mc" 
+                        	+ " WHERE mc.name = '" + companyName 
+                        	+ "' AND mc.cmpID = rep.mCompany;");  
+	}catch (Exception e) {
+		System.err.println (e.getMessage());
+	}//end try
    }//end listRepairsMade
    
    public static void topKMaintenanceCompany(DBProject esql){
 	  // List Top K Maintenance Company Names based on total repair count (descending order)
-      // Your code goes here.
-      // ...
-      // ...
+	try {
+		System.out.print("Enter k: ");
+		int k = Integer.parseInt(in.readLine());
+
+		esql.executeQuery("SELECT mc.name, COUNT(rep.rid) as num_of_repairs FROM repair rep, MaintenanceCompany mc"
+                        	+ " WHERE mc.cmpID = rep.mCompany"
+                        	+ " GROUP BY mc.name"
+                        	+ " ORDER BY num_of_repairs DESC LIMIT " + k + ";"); 
+	} catch (Exception e) {
+		System.err.println (e.getMessage());
+	}//end try
    }//end topKMaintenanceCompany
    
    public static void numberOfRepairsForEachRoomPerYear(DBProject esql){
 	  // Given a hotelID, roomNo, get the count of repairs per year
-      // Your code goes here.
-      // ...
-      // ...
+	try {
+	System.out.print("Enter hotelID: ");
+	int hotelID = Integer.parseInt(in.readLine());
+	System.out.print("Enter roomNo: ");
+	int roomNo = Integer.parseInt(in.readLine());
+
+	esql.executeQuery("SELECT hotelID, roomNo, EXTRACT(YEAR FROM repairDate) AS year, COUNT(rID) as num_of_repairs"
+                        	+ " FROM repair"
+                        	+ " WHERE hotelID = " + hotelID + " AND roomNo = " + roomNo
+                        	+ " GROUP BY hotelID, roomNo, year;");  
+	}catch (Exception e) {
+		System.err.println (e.getMessage());
+	}//end try
    }//end listRepairsMade
 
 }//end DBProject
