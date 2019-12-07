@@ -21,7 +21,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-
+import java.time.LocalDate;
 /**
  * This class defines a simple embedded SQL utility class that is designed to
  * work with PostgreSQL JDBC drivers.
@@ -520,13 +520,15 @@ public class DBProject {
 	  // Given a hotelID, get the count of rooms available 
 	int hotelID;
 	try {
-	System.out.print("Enter hotelID: ");
+	System.out.print("\tEnter hotelID: ");
 	hotelID = Integer.parseInt(in.readLine());
- 	System.out.println("Checking today's available rooms.");
+	System.out.print("\tEnter the date you are checking for in YYYY-MM-DD Format: ");
+	String date = in.readLine();
+ 	System.out.println("\tChecking available rooms.\n");
 	esql.executeQuery("SELECT COUNT(*) FROM room WHERE hotelid = " + hotelID 
                            + " AND (hotelid, roomno) NOT IN "
                            + "(SELECT hotelid, roomno FROM booking " 
-                           + "WHERE bookingdate = '" + LocalDate.now().toString() + "');", true);  
+                           + "WHERE bookingdate = '" + date + "');", true);  
 	}catch (Exception e) {
 		System.err.println (e.getMessage());
     }//end try
@@ -534,14 +536,16 @@ public class DBProject {
    
    public static void numberOfBookedRooms(DBProject esql){
 	  // Given a hotelID, get the count of rooms booked
-int hotelID;
+	int hotelID;
 	try {
-		System.out.print("Enter hotelID: ");
+		System.out.print("\tEnter hotelID: ");
 		hotelID = Integer.parseInt(in.readLine());
+		System.out.print("Enter the date you are checking for in YYYY-MM-DD Format: ");
+		String date = in.readLine();
 		System.out.println("Checking today's booked rooms.");
 		esql.executeQuery("SELECT COUNT(*) FROM booking " 
 				+ "WHERE hotelid = " + hotelID 
-				+ " AND bookingdate = '" + LocalDate.now().toString() + "';", true);  
+				+ " AND bookingdate = '" + date + "';", true);  
 	}catch (Exception e) {
 		System.err.println (e.getMessage());
 	}//end try
